@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:MVVMSample.Helpers"
+             xmlns:local="clr-namespace:MVVMSample.Views"
+             xmlns:viewModels="clr-namespace:MVVMSample.ViewModels"
+             x:DataType="viewModels:AddToysPageViewModel"
+             x:Class="MVVMSample.Views.AddToyPage">
+
+    <!--<ContentPage.Resources>-->
+
+    <!--<ResourceDictionary>
+    -->
+    <!--  colors  -->
+    <!--
+            <Color x:Key="MyPurple">#c967f0</Color>
+
+
+            <Style TargetType="Label" x:Key="ErrorLabel">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="Yellow" />
+                <Setter Property="FontSize" Value="28" />
+            </Style>
+
+
+        </ResourceDictionary>
+    </ContentPage.Resources>-->
+    <VerticalStackLayout>
+
+        <!--  כותרת מסך  -->
+        <Label FontFamily="MaterialSymbols"
+               FontSize="120"
+               TextColor="{x:StaticResource MyPurple}"
+               Text="{x:Static helpers:IconFont.Smart_toy}"
+               VerticalOptions="Center"
+               HorizontalOptions="Center" />
+        <Label Text="צעצוע חדש"
+               FontFamily="AlmogRegular"
+               FontAttributes="Bold"
+               FontSize="40"
+               HorizontalTextAlignment="Center" />
+        <!--  Grid 4*2 for Adding a new Toy  -->
+        <Grid Margin="15"
+              RowSpacing="13"
+              ColumnSpacing="2"
+              RowDefinitions="*,*,*"
+              ColumnDefinitions="*,2*">
+
+            <!--  שם צעצוע והודעת שגיאה שורה 0  -->
+
+            <Label VerticalOptions="Center" Text="שם הצעצוע" />
+
+            <Entry Placeholder="צעצוע"
+                   Text="{Binding Name}"
+                   VerticalOptions="Center"
+                   Grid.Column="1"
+                   ClearButtonVisibility="WhileEditing"
+                   ReturnType="Next" />
+
+            <!--  הודעת שגיאה  -->
+            <Label Style="{x:StaticResource ErrorLabel}"
+                   Text="{Binding ErrorMessage}"
+                   IsVisible="{Binding HasError}"
+                   Grid.Column="1"
+                   Margin="0,65,0,0" />
+
+            <!--  סוג צעצוע בשורה 1  -->
+            <Label Grid.Row="1"
+                   Text="סוג צעצוע"
+                   TextColor="{AppThemeBinding Dark={x:StaticResource MyPurple},
+                                               Light=Red}"
+                   VerticalOptions="Center" />
+
+            <Picker Title="סוג צעצוע"
+                    ToolTipProperties.Text="בחירה מבין פאזל, משחק חשיבה וכו'"
+                    TitleColor="RosyBrown"
+                    TextColor="DarkBlue"
+                    Grid.Row="1"
+                    ItemDisplayBinding="{Binding Name}"
+                    ItemsSource="{Binding ToyTypes}"
+                    SelectedItem="{Binding SelectedType}"
+                    Grid.Column="1">
+
+                <!--  picker items  -->
+                <!--<Picker.Items>
+                    <x:String>פאזל</x:String>
+                    <x:String>משחק חשיבה</x:String>
+                    <x:String>בובה</x:String>
+
+                </Picker.Items>-->
+
+            </Picker>
+
+            <!--  מחיר בשורה 2  -->
+            <Label Grid.Row="2"
+                   Text="מחיר"
+                   VerticalOptions="Center" />
+            <Editor Grid.Row="2"
+                    Text="{Binding Price}"
+                    Keyboard="Numeric"
+                    Grid.Column="1"
+                    Placeholder="מחיר בשקלים" />
+        </Grid>
+
+        <!--  כפתורי פעולה  -->
+        <Grid Margin="15,0"
+              RowDefinitions="*,*"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="2">
+            <Button Command="{Binding AddToyCommand}"
+                    CommandParameter="{Binding Text, Source={x:RelativeSource Mode=Self}}"
+                    Text="הוסף צעצוע" />
+
+            <Button Command="{Binding AddToyCommand}"
+                    CommandParameter="{Binding Text, Source={x:RelativeSource Mode=Self}}"
+                    Grid.Column="1"
+                    Text="הוסף משומש" />
+            <Label Margin="3"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="2"
+                   HorizontalTextAlignment="Center"
+                   FontSize="20"
+                   Text="{Binding Message}" />
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

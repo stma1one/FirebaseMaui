@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell x:Class="MVVMSample.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:MVVMSample.Views"
+       xmlns:this="clr-namespace:MVVMSample"
+       x:DataType="this:AppShell"
+       Title="MVVMSample">
+
+    <!--  כותרת תפריט  -->
+    <Shell.FlyoutHeader>
+        <StackLayout BackgroundColor="Green">
+            <Label Text="הצעצועים הכי טובים בעולם" />
+
+        </StackLayout>
+    </Shell.FlyoutHeader>
+
+
+    <!--  מסך טעינה  -->
+    <!--  FlyoutItemIsVisible="False" התפריט  לא מוצג  -->
+
+    <ShellContent FlyoutItemIsVisible="False"
+                  ContentTemplate="{DataTemplate local:LoadingPage}"
+                  Route="LoadingPage" />
+
+
+    <!--  תפריט צף  -->
+
+
+    <FlyoutItem Title="צעצוע">
+        <!--  תפריט צף עם TAB  -->
+        <Tab Icon="toy.png">
+            <ShellContent Icon="toy.png"
+                          Title=" חדש צעצוע"
+                          ContentTemplate="{DataTemplate local:AddToyPage}"
+                          Route="MainPage" />
+            <!--<ShellContent Icon="pen.png"
+                          Title="פרטי צעצוע"
+                          ContentTemplate="{DataTemplate local:ToyDetailsPage}" />-->
+        </Tab>
+
+        <Tab Title="אוספים" Icon="pen.png">
+            <ShellContent Route="ToyTab"
+                          Title="רשימת צעצועים"
+                          ContentTemplate="{DataTemplate local:ViewToysPage}" />
+        </Tab>
+    </FlyoutItem>
+
+    <FlyoutItem Title="אוסף">
+        <ShellContent Title="אוספים"
+                      ContentTemplate="{DataTemplate local:ViewToysPage}"
+                      Route="Toys" />
+    </FlyoutItem>
+
+    <!--  ניווט טאבים  -->
+    <!--<TabBar Title="צעצוע">
+        <Tab Icon="toy.png">
+            <ShellContent Icon="toy.png"
+                          Title=" חדש צעצוע"
+                          ContentTemplate="{DataTemplate local:AddToyPage}"
+                          Route="MainPage" />
+            <ShellContent Icon="pen.png"
+                          Title="פרטי צעצוע"
+                          ContentTemplate="{DataTemplate local:ToyDetailsPage}" />
+        </Tab>
+
+        <Tab Title="אוספים" Icon="pen.png">
+            <ShellContent Title="רשימת צעצועים" ContentTemplate="{DataTemplate local:ViewToysPage}" />
+        </Tab>
+    </TabBar>-->
+
+    <MenuItem IconImageSource="dotnet_bot.png"
+              Text="Logout"
+              Command="{Binding LogoutCommand}" />
+</Shell>

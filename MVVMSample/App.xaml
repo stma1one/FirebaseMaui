@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MVVMSample"
+             x:Class="MVVMSample.App">
+    <Application.Resources>
+
+        <ResourceDictionary>
+
+            <!--  colors  -->
+            <Color x:Key="MyPurple">#c967f0</Color>
+
+            <Style Class="MyLables"
+                   TargetType="Label"
+                   x:Key="basicLabel">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+            </Style>
+
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark=white, Light=white}" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark=Black, Light={StaticResource MyPurple}}" />
+            </Style>
+
+
+
+
+            <Style TargetType="Label"
+                   x:Key="ErrorLabel"
+                   BasedOn="{x:StaticResource basicLabel}">
+
+                <!--<Setter Property="TextColor" Value="{x:StaticResource MyPurple}" />-->
+
+                <Setter Property="FontSize" Value="18" />
+            </Style>
+
+
+            <ResourceDictionary.MergedDictionaries>
+                
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

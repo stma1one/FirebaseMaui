@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    1)add xmlns for viewmodels and models and
+    2)add x:DataType for autocomplete from viewmodel
+-->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MVVMSample.ViewModels"
+             xmlns:models="clr-namespace:MVVMSample.Models"
+             x:DataType="viewmodels:ViewToysPageViewModel"
+             xmlns:helpers="clr-namespace:MVVMSample.Helpers"
+             x:Class="MVVMSample.Views.ViewToysPage">
+
+
+
+
+    <Grid Padding="10"
+          ColumnSpacing="3"
+          RowSpacing="2"
+          RowDefinitions="*,*,*,5*,*">
+
+        <Label FontFamily="AlmogRegular"
+               Text="אוסף הצעצועים שלנו"
+               FontSize="26"
+               VerticalOptions="Center"
+               HorizontalOptions="Center" />
+
+        <!--  Filters  -->
+        <Grid Margin="3"
+              Grid.Row="1"
+              ColumnSpacing="3"
+              RowSpacing="6"
+              RowDefinitions="*,*"
+              ColumnDefinitions="*,*">
+            <Entry Margin="5,0"
+                   HeightRequest="50"
+                   Grid.ColumnSpan="2"
+                   Placeholder="הכנס מחיר לסינון"
+                   Keyboard="Numeric"
+                   Text="{Binding Price}" />
+
+            <Button VerticalOptions="Start"
+                    HeightRequest="40"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Text="סנן מעל המחיר"
+                    Command="{Binding FilterAbovePriceCommand}" />
+
+            <Button VerticalOptions="Start"
+                    Grid.Row="1"
+                    HeightRequest="40"
+                    Grid.Column="1"
+                    Text="סנן מתחת למחיר"
+                    Command="{Binding FilterBelowPriceCommand}" />
+        </Grid>
+
+        <!--  lets do רענון  -->
+        <RefreshView Command="{Binding RefreshCommand}"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Grid.Row="3">
+
+            <!--  CollectionView  -->
+
+            <CollectionView x:Name="colview"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedToy}"
+                            ItemsSource="{Binding Toys}">
+                <!--  ItemsLayouts  -->
+                <!--
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Span="2" Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+                -->
+                <CollectionView.EmptyView>
+
+                    <StackLayout>
+
+                        <Image Source="dotnet_bot.png" />
+                        <Label HorizontalTextAlignment="Center" Text="הכל טוב" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Toy">
+                        <SwipeView>
+                            <!--  SwipeView.TopItems,SwipeView.RightItems,SwipeView.BottomItems  -->
+                            <SwipeView.LeftItems>
+                                <SwipeItems>
+                                    <!--  Binding .   : means pass the whole object as parameter  -->
+                                    <!--
+                                        DeleteCommand belongs to the view model but in the collectioview
+                                        we are running under DataType=Toy so we need
+                                        to reference Source to find the BindingContext with the viewmodel
+                                        x:RelativeSource enables us to auto search the viewmodel in the visual tree
+                                    -->
+                                    <SwipeItem Command="{Binding DeleteCommand, Source={x:RelativeSource AncestorType={x:Type viewmodels:ViewToysPageViewModel}, Mode=FindAncestorBindingContext}}"
+                                               CommandParameter="{Binding .}"
+                                               Text="מחק"
+                                               BackgroundColor="Pink">
+                                        <SwipeItem.IconImageSource>
+                                            <FontImageSource FontFamily="MaterialSymbols" Glyph="{x:Static helpers:IconFont.Delete}" />
+                                        </SwipeItem.IconImageSource>
+
+
+
+                                        <!--  הוספת כפתורי ניווט  -->
+                                    </SwipeItem>
+
+
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+
+
+                            <!--  עיצוב יותר מתוחכם  -->
+                            <Border InputTransparent="False"
+                                    StrokeThickness="1"
+                                    Stroke="#E0E0E0"
+                                    BackgroundColor="White"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="10"
+                                    Margin="5">
+
+                                <Grid RowDefinitions="*, *, *" ColumnDefinitions="*, *">
+
+                                    <!--  Toy Image  -->
+
+                                    <Image Grid.RowSpan="3"
+                                           Source="{Binding Image}"
+                                           HeightRequest="80"
+                                           WidthRequest="80"
+                                           Aspect="AspectFit"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center" />
+
+
+                                    <!--  Toy Name  -->
+
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Name}"
+                                           FontAttributes="Bold"
+                                           FontSize="16"
+                                           VerticalOptions="Start"
+                                           Margin="10,0,0,0" />
+
+
+                                    <!--  Price Label in Rounded Rectangle  -->
+
+                                    <Border Grid.Row="2"
+                                            Grid.Column="1"
+                                            BackgroundColor="#2196F3"
+                                            StrokeShape="RoundRectangle 15"
+                                            Padding="5"
+                                            HorizontalOptions="Start"
+                                            VerticalOptions="End">
+                                        <Label Text="{Binding Price, StringFormat='{0:F2}₪'}"
+                                               TextColor="White"
+                                               FontSize="14"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center" />
+                                    </Border>
+                                </Grid>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2" Command="{Binding ShowDetailsCommand, Source={x:RelativeSource AncestorType={x:Type viewmodels:ViewToysPageViewModel}, Mode=FindAncestorBindingContext}}" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <!--<Grid ColumnDefinitions="*,*,*">
+                        <Label Text="{Binding Name}" />
+                        <Image Grid.Column="1"
+                               WidthRequest="80"
+                               HeightRequest="80"
+                               Aspect="AspectFill"
+                               Source="{Binding Image}" />
+                        <Label Grid.Column="2" Text="{Binding Price, StringFormat='{0}₪'}" />
+
+                    </Grid>-->
+                        </SwipeView>
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--  End CollectionView  -->
+        </RefreshView>
+        <!--  end refresh  -->
+
+    </Grid>
+</ContentPage>

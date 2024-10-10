@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MVVMSample.Views.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:MVVMSample.ViewModels"
+             Title="מסך התחברות"
+             x:DataType="viewmodel:LoginPageViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <Grid Margin="0,10,0,0" RowDefinitions="2*,*">
+            <VerticalStackLayout Padding="10"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Border Margin="0,20,0,0"
+                        Padding="8"
+                        Stroke="Gray"
+                        StrokeThickness="1"
+                        BackgroundColor="White"
+                        StrokeShape="RoundRectangle 10,10,10,10">
+                    <StackLayout Padding="10">
+                        <VerticalStackLayout Padding="10" BackgroundColor="White">
+                            <Image HeightRequest="80"
+                                   HorizontalOptions="Center"
+                                   IsVisible="False"
+                                   SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                                   Source="brushfill.png" />
+                            <Label Padding="5"
+                                   FontAttributes="Bold"
+                                   FontFamily="Consolas"
+                                   FontSize="30"
+                                   Text="Login"
+                                   TextColor="Black" />
+                            <Label Padding="5"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   Text="to continue!"
+                                   TextColor="Black" />
+                        </VerticalStackLayout>
+
+                        <!--<BoxView Color="Gray"
+             HeightRequest="2"
+             HorizontalOptions="Fill" />-->
+                        <VerticalStackLayout Padding="10">
+                            <Label FontFamily="Consolas" Text="Username" />
+                            <Border Margin="0,10,0,0"
+                                    Padding="3"
+                                    StrokeShape="RoundRectangle 10">
+                                <VerticalStackLayout>
+
+                                    <Entry x:Name="Username"
+                                           Margin="5,0,0,0"
+                                           FontSize="18"
+                                           Placeholder="שם משתמש"
+                                           Text="{Binding Email, Mode=TwoWay}" />
+
+                                </VerticalStackLayout>
+                            </Border>
+                            <VerticalStackLayout Margin="0,5,0,0" Padding="0">
+                                <Label FontFamily="Consolas" Text="Password" />
+                                <Border Margin="0,10,0,0"
+                                        Padding="3"
+                                        StrokeShape="RoundRectangle 10">
+                                    <Entry x:Name="password"
+                                           Margin="5,0,0,0"
+                                           FontSize="18"
+                                           IsPassword="True"
+                                           Placeholder="סיסמה"
+                                           Text="{Binding Password, Mode=TwoWay}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+
+                            <Button x:Name="LoginButton"
+                                    Margin="0,20,0,0"
+                                    Command="{Binding LoginCommand}"
+                                    HorizontalOptions="FillAndExpand"
+                                    Text="כניסה"
+                                    VerticalOptions="CenterAndExpand" />
+                            <Button Margin="0,20,0,0"
+                                    Text="סע לעבודה, חבר"
+                                    Command="{Binding GoToWorkCommand}" />
+
+                            <!--  שעון מסתובב בזמן ביצוע הלוגין  -->
+                            <ActivityIndicator Color="Purple" IsRunning="{Binding InServerCall}" />
+
+                            <BoxView Margin="0,20,0,0"
+                                     HeightRequest="2"
+                                     HorizontalOptions="Fill"
+                                     Color="Black" />
+                            <VerticalStackLayout Margin="0,10,0,0" Padding="10">
+                                <Label FontAttributes="Bold"
+                                       FontFamily="Consolas"
+                                       HorizontalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span FontAttributes="Bold"
+                                                  FontFamily="Consolas"
+                                                  Text="אין לך עדיין חשבון?" />
+                                            <Span FontAttributes="Bold"
+                                                  FontFamily="Consolas"
+                                                  Text="הרשמה"
+                                                  TextColor="Blue"
+                                                  TextDecorations="Underline" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </StackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- Circular background -->
+  <circle cx="200" cy="200" r="195" fill="#e0e0e0" stroke="#4a4a4a" stroke-width="5"/>
+  
+  <!-- Train engine body -->
+  <rect x="100" y="160" width="120" height="80" fill="#4169e1" rx="10" ry="10" />
+  
+  <!-- Train engine cabin -->
+  <rect x="220" y="140" width="60" height="100" fill="#4169e1" rx="10" ry="10" />
+  
+  <!-- Smokestack -->
+  <rect x="240" y="110" width="20" height="30" fill="#696969" />
+  
+  <!-- Windows -->
+  <rect x="230" y="150" width="40" height="30" fill="#87cefa" rx="5" ry="5" />
+  
+  <!-- Wheels -->
+  <circle cx="130" cy="240" r="20" fill="#333333" />
+  <circle cx="190" cy="240" r="20" fill="#333333" />
+  <circle cx="250" cy="240" r="20" fill="#333333" />
+  
+  <!-- Front light -->
+  <circle cx="100" cy="200" r="10" fill="#ffff00" />
+  
+  <!-- Connector -->
+  <rect x="280" y="190" width="30" height="10" fill="#c0c0c0" />
+  
+  <!-- Simple cargo car -->
+  <rect x="310" y="170" width="70" height="70" fill="#8b4513" rx="10" ry="10" />
+  
+  <!-- Cargo car wheel -->
+  <circle cx="345" cy="240" r="20" fill="#333333" />
+</svg>
