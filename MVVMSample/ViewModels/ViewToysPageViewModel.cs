@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace MVVMSample.ViewModels
 {
-   public class ViewToysPageViewModel:ViewModelBase
+    public class ViewToysPageViewModel : ViewModelBase
     {
         #region Fields
         private double? price;
@@ -24,26 +24,26 @@ namespace MVVMSample.ViewModels
         private IToys toyService;
         private ObservableCollection<Toy> fullList = new ObservableCollection<Toy>();
         private bool isRefreshing;
-       
+
         #region load ToyTypes
         List<ToyTypes> toyTypes;
         #endregion
 
         #region observable
         IDisposable dispose;
-		#endregion
+        #endregion
 
-		#region נבחר מהרשימה
-		private Toy selectedToy;
-		private bool hasInternet;
+        #region נבחר מהרשימה
+        private Toy selectedToy;
+        private bool hasInternet;
 
         #region Because of Online- are we in filter Mode?
         private bool isFilterAbove;
         private bool isFilterBelow;
-	
-		#endregion
 
-		public Toy SelectedToy
+        #endregion
+
+        public Toy SelectedToy
         {
             get
             {
@@ -62,11 +62,11 @@ namespace MVVMSample.ViewModels
         #endregion
 
         #region בחירת אוסף פריטים מהרישמה
-       public ObservableCollection<object> SelectedToys
+        public ObservableCollection<object> SelectedToys
         {
             get; set;
         }
-        
+
         #endregion
 
 
@@ -74,7 +74,7 @@ namespace MVVMSample.ViewModels
 
         #region Properties
 
-       
+
         public bool IsRefreshing
         {
             get
@@ -126,7 +126,8 @@ namespace MVVMSample.ViewModels
 
         public ICommand DeleteCommand
         {
-        get; private set; }
+            get; private set;
+        }
         public ICommand RefreshCommand
         {
             get; private set;
@@ -138,136 +139,10 @@ namespace MVVMSample.ViewModels
 
         public ICommand FilterBelowPriceCommand
         {
-            get;private set;
+            get; private set;
         }
 
-       public async Task LoadToysType()
-        {
-            
-            
-                toyTypes = await toyService?.GetToyTypes();
-            
-            
-        }
-        public void UnloadData()
-        {
-
-            if (dispose != null)
-            {
-                dispose.Dispose();
-                dispose = null;
-            }
-        }
-        //public async Task LoadData()
-        public async void LoadData()
-        {
-			
-			if (dispose==null)
-            try
-            {
-                  
-                    
-                     Task.Delay(2000);
-                    if(toyService is RealTimeService)
-                        dispose=(toyService as RealTimeService)
-                            .RegisterToys()
-                            .Subscribe( item =>
-					        {
-                                try
-                                {
-                                    if (item != null && item.Object != null)
-                                    {
-
-                                        switch (item.EventType)
-                                        {
-
-                                            case FirebaseEventType.Delete:
-                                                {
-                                                    
-                                                    
-                                                    RemoveToy(item.Object.FirebaseKey);
-                                               
-                                                    
-                                                    break;
-                                                }
-                                            case FirebaseEventType.InsertOrUpdate:
-                                                {
-                                                   
-                                                    AddOrUpdateToy(item);
-													
-
-													break;
-                                                }
-                                            default:
-                                                break;
-                                        }
-
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-									
-									throw new Exception(ex.Message, ex);
-                                 
-                                }
-                              
-                                    
-								},onError:HandleError);
-					
-				}
-            catch (Exception ex) { IsRefreshing = false; throw new Exception(ex.Message, ex); }
-
-        }
-
-        private void AddOrUpdateToy(FirebaseEvent<Toy> item)
-        {
-            Toy toy;
-	    //האם צעצוע חדש או קיים
-            var existingToy = Toys.Where(x => x.FirebaseKey == item.Key).ToList();
-
-	    //מכיוון שעדכון של צעצוע לא יעדכן את המסך
-     	    //ניצור צעצוע חדש בכל מקרה
-     
-            toy = new Toy()
-            {
-                FirebaseKey = item.Key,
-                Price = item.Object.Price,
-                IsSecondHand = item.Object.IsSecondHand,
-                Image = item.Object.Image,
-                Name = item.Object.Name,
-                ToyTypeKey = item.Object.ToyTypeKey,
-                //load Toy type
-                Type = toyTypes.Where(x => x.Id == int.Parse(item.Object.ToyTypeKey)).FirstOrDefault()
-			};
-
-     //אם אנחנו במצב של פילטור- צריך להחליט האם צריך להוסיף אותו לאוסף המוצג או לא
-            
-               bool applyFilter=(!filterAbove&&!filterBelow)
-	||(filterAbove&&Price<toy.Price)||(filterBelow&&Price>=toy.Price);
-            //אם זה צעצוע קיים ואין פילטר או שהצעצוע עומד בתנאי הפילטור
-            if (existingToy.Count>0&&applyFilter)
-            {
-                foreach (var t in existingToy)
-                {
-		//נמצא את המיקום שלו - ונכניס את הצעצוע החדש במקומו
-                    int index = Toys.IndexOf(t);
-                    Toys?.RemoveAt(index);
-                    Toys?.Insert(index, toy);
-                }
-            }
-	    //אם זה צעצוע חדש
-     	   else if(applyFilter)
-     			Toys?.Add(toy);
-	//אם צעצוע קיים אבל לא עומד בתנאי הפילטור 
-		else
-  		     foreach (var t in existingToy)
-                {
-			Toys.Remove(t);
-		}
-	    
-            }
-	 }
-		#region Navigation
+	 		#region Navigation
 		public ICommand ShowDetailsCommand
         {
             get;private set;
@@ -355,7 +230,8 @@ namespace MVVMSample.ViewModels
 
                     Toys.Clear();
                     UnloadData();
-                    LoadData();
+				await Task.Delay(200);
+				    LoadData();
                     Price = null;
                     RefreshCommands();
                 }
@@ -471,9 +347,6 @@ namespace MVVMSample.ViewModels
 				await Shell.Current.DisplayAlert(" NO WIFI", "באסה", "Ok");
 
 		}
-        #endregion
-
-        //remove toy from list
 		private void RemoveToy(string? firebaseKey)
 		{
 
@@ -482,5 +355,128 @@ namespace MVVMSample.ViewModels
 
 			
 		}
+        public async Task LoadToysType()
+        {
+
+
+            toyTypes = await toyService?.GetToyTypes();
+
+
+        }
+        public void UnloadData()
+        {
+
+            if (dispose != null)
+            {
+                dispose.Dispose();
+                dispose = null;
+            }
+        }
+        //public async Task LoadData()
+        public async void LoadData()
+        {
+
+            if (dispose == null)
+                try
+                {
+                   
+                    if (toyService is RealTimeService)
+                        dispose = (toyService as RealTimeService)
+                            .RegisterToys()
+                            .Subscribe(item =>
+                            {
+                                try
+                                {
+                                    if (item != null && item.Object != null)
+                                    {
+
+                                        switch (item.EventType)
+                                        {
+
+                                            case FirebaseEventType.Delete:
+                                                {
+                                                    RemoveToy(item.Key);
+                                                    break;
+                                                }
+                                            case FirebaseEventType.InsertOrUpdate:
+                                                {
+
+                                                    AddOrUpdateToy(item);
+
+
+                                                    break;
+                                                }
+                                            default:
+                                                break;
+                                        }
+
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    throw new Exception(ex.Message, ex);
+
+                                }
+
+
+                            }, onError: HandleError);
+
+                }
+                catch (Exception ex) { IsRefreshing = false; throw new Exception(ex.Message, ex); }
+
+        }
+    
+
+        private void AddOrUpdateToy(FirebaseEvent<Toy> item)
+        {
+            Toy toy;
+	    //האם צעצוע חדש או קיים
+            var existingToy = Toys.Where(x => x.FirebaseKey == item.Key).ToList();
+
+	    //מכיוון שעדכון של צעצוע לא יעדכן את המסך
+     	    //ניצור צעצוע חדש בכל מקרה
+     
+            toy = new Toy()
+            {
+                FirebaseKey = item.Key,
+                Price = item.Object.Price,
+                IsSecondHand = item.Object.IsSecondHand,
+                Image = item.Object.Image,
+                Name = item.Object.Name,
+                ToyTypeKey = item.Object.ToyTypeKey,
+                //load Toy type
+                Type = toyTypes.Where(x => x.Id == int.Parse(item.Object.ToyTypeKey)).FirstOrDefault()
+			};
+
+     //אם אנחנו במצב של פילטור- צריך להחליט האם צריך להוסיף אותו לאוסף המוצג או לא
+            
+       bool applyFilter=(!isFilterAbove && !isFilterBelow) ||(isFilterAbove && Price<toy.Price)||(isFilterBelow && Price>=toy.Price);
+            //אם זה צעצוע קיים ואין פילטר או שהצעצוע עומד בתנאי הפילטור
+            if (existingToy.Count > 0 && applyFilter)
+            {
+                foreach (var t in existingToy)
+                {
+                    //נמצא את המיקום שלו - ונכניס את הצעצוע החדש במקומו
+                    int index = Toys.IndexOf(t);
+                    Toys?.RemoveAt(index);
+                    Toys?.Insert(index, toy);
+                }
+            }
+            //אם זה צעצוע חדש
+            else if (applyFilter)
+                Toys?.Add(toy);
+            //אם צעצוע קיים אבל לא עומד בתנאי הפילטור 
+            else
+                foreach (var t in existingToy)
+                {
+                    Toys.Remove(t);
+
+                }           
+        
+        }
+        #endregion
+
+        //remove toy from list
     }
 }

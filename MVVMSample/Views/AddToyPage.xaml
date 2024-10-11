@@ -96,7 +96,7 @@
                    Text="מחיר"
                    VerticalOptions="Center" />
             <Editor Grid.Row="2"
-                    Text="{Binding Price}"
+                    Text="{Binding Price, StringFormat='{0:F0}'}"
                     Keyboard="Numeric"
                     Grid.Column="1"
                     Placeholder="מחיר בשקלים" />
