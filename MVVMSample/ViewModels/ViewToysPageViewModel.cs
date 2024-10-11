@@ -30,7 +30,7 @@ namespace MVVMSample.ViewModels
         #endregion
 
         #region observable
-        IDisposable dis;
+        IDisposable dispose;
 		#endregion
 
 		#region נבחר מהרשימה
@@ -40,6 +40,7 @@ namespace MVVMSample.ViewModels
         #region Because of Online- are we in filter Mode?
         private bool isFilterAbove;
         private bool isFilterBelow;
+	
 		#endregion
 
 		public Toy SelectedToy
@@ -151,24 +152,24 @@ namespace MVVMSample.ViewModels
         public void UnloadData()
         {
 
-            if (dis != null)
+            if (dispose != null)
             {
-                dis.Dispose();
-                dis = null;
+                dispose.Dispose();
+                dispose = null;
             }
         }
         //public async Task LoadData()
         public async void LoadData()
         {
 			
-			if (dis==null)
+			if (dispose==null)
             try
             {
                   
                     
                      Task.Delay(2000);
                     if(toyService is RealTimeService)
-                        dis=(toyService as RealTimeService)
+                        dispose=(toyService as RealTimeService)
                             .RegisterToys()
                             .Subscribe( item =>
 					        {
@@ -221,8 +222,12 @@ namespace MVVMSample.ViewModels
         private void AddOrUpdateToy(FirebaseEvent<Toy> item)
         {
             Toy toy;
+	    //האם צעצוע חדש או קיים
             var existingToy = Toys.Where(x => x.FirebaseKey == item.Key).ToList();
-            
+
+	    //מכיוון שעדכון של צעצוע לא יעדכן את המסך
+     	    //ניצור צעצוע חדש בכל מקרה
+     
             toy = new Toy()
             {
                 FirebaseKey = item.Key,
@@ -235,27 +240,33 @@ namespace MVVMSample.ViewModels
                 Type = toyTypes.Where(x => x.Id == int.Parse(item.Object.ToyTypeKey)).FirstOrDefault()
 			};
 
-            if (existingToy.Count>0)
+     //אם אנחנו במצב של פילטור- צריך להחליט האם צריך להוסיף אותו לאוסף המוצג או לא
+            
+               bool applyFilter=(!filterAbove&&!filterBelow)
+	||(filterAbove&&Price<toy.Price)||(filterBelow&&Price>=toy.Price);
+            //אם זה צעצוע קיים ואין פילטר או שהצעצוע עומד בתנאי הפילטור
+            if (existingToy.Count>0&&applyFilter)
             {
                 foreach (var t in existingToy)
-                {//t.Type =
+                {
+		//נמצא את המיקום שלו - ונכניס את הצעצוע החדש במקומו
                     int index = Toys.IndexOf(t);
                     Toys?.RemoveAt(index);
                     Toys?.Insert(index, toy);
                 }
             }
-            else
-            {
-                //t.Type = toyTypes?.Where(x => x.Id == int.Parse(item.Object.ToyTypeKey)).FirstOrDefault();
-                Toys?.Add(toy);
-
-
+	    //אם זה צעצוע חדש
+     	   else if(applyFilter)
+     			Toys?.Add(toy);
+	//אם צעצוע קיים אבל לא עומד בתנאי הפילטור 
+		else
+  		     foreach (var t in existingToy)
+                {
+			Toys.Remove(t);
+		}
+	    
             }
-            if (isFilterAbove)
-                FilterAbove();
-            else if (isFilterBelow)
-                FilterBelow();
-        }
+	 }
 		#region Navigation
 		public ICommand ShowDetailsCommand
         {
